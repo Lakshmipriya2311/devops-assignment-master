@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-test
+  labels:
+    app: devops-test
+spec:
+  ports:
+  - name: "80"
+    port: 80
+    targetPort: devops-test
+    protocol: TCP
+  - name: "443"
+    port: 443
+    targetPort: devops-test
+    protocol: TCP
+  selector:
+    app: devops-test
+    type: LoadBalancer
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-test
+  labels:
+    app: devops-test
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+        app: devops-test
+  template:
+    metadata:
+      labels:
+        app: devops-test
+    spec:
+      containers:
+      - name: devops-test
+        image: 151260271154.dkr.ecr.eu-central-1.amazonaws.com/devops-test:latest 
+        ports:
+          - containerPort: 4444
+            name: devops-test
+            protocol: TCP
+      volumes:
+      - name: devops-volume
+        persistentVolumeClaim:
+           claimName: devops-test 
